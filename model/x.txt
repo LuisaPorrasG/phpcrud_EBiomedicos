@@ -1,0 +1,317 @@
+<?php
+   $hostname= "localhost";
+   $usuario = "root";
+   $password = "";
+   $dbname = "porraspruebas";
+   $conexion=  mysqli_connect($hostname, $usuario, $password ,$dbname);
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mostrrar datos</title>
+    <link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+
+
+<?php
+   $DOCUMENTO=$_POST ['DOCUMENTO'];
+   $NOMBRE=$_POST['NOMBRE'];
+   $SEXO=$_POST['SEXO'];
+   $DOMICILIO=$_POST['DOMICILIO'];
+   $FECHAI=$_POST['FECHAI'];
+   $FECHAN=$_POST['FECHAN'];
+   $SUELDO=$_POST['SUELDO'];
+   $ID=$_POST['ID'];
+  
+   $CAMPO=$_POST['CAMPO'];
+
+    if(isset($_POST['insertar'])){
+        $consulta="insert into empleado (documento,nombre,sexo,domicilio,fecha_ingreso,fecha_nacimiento,sueldo_basico)
+        VALUES($DOCUMENTO,'$NOMBRE','$SEXO','$DOMICILIO','$FECHAI','$FECHAN',$SUELDO)";
+        $resultadoi = mysqli_query($conexion,$consulta);
+    } 
+
+    if(isset($_POST['eliminar'])){
+        $consulta="delete from empleado where  id  = '$ID'";
+        $resultadoi = mysqli_query($conexion,$consulta);
+    } 
+
+    if(isset($_POST['chombres'])){
+        $consulta="UPDATE empleado 
+        SET cantidad_hombres = (SELECT COUNT(sexo) AS Cantidad_Hombres FROM empleado WHERE sexo = 'M') 
+        WHERE id = (SELECT MIN(id) FROM empleado)";
+        $resultadoh = mysqli_query($conexion,$consulta);
+        
+    }
+
+    if(isset($_POST['cMujeres'])){
+        $consulta="UPDATE empleado 
+        SET cantidad_mujeres = (SELECT COUNT(sexo) AS Cantidad_Mujerres FROM empleado WHERE sexo = 'F') 
+        WHERE id = (SELECT MIN(id) FROM empleado)";
+        $resultadoh = mysqli_query($conexion,$consulta);
+        
+    }
+
+
+    if(isset($_POST['aumento'])){
+        $consulta="UPDATE empleado SET sueldo_aumento = sueldo_basico + (sueldo_basico * 0.10);";
+        $resultadoh = mysqli_query($conexion,$consulta);
+        
+    }
+
+
+    if(isset($_POST['totalh'])){
+        $consulta="update empleado set Total_nomina_hombres = (select SUM(sueldo_basico) as Total_nomina_hombres from 
+        empleado e where sexo ='M' )where  id = (SELECT MIN(id) FROM empleado)
+        ";
+        $resultadoh = mysqli_query($conexion,$consulta);
+        
+    }
+
+    if(isset($_POST['totalm'])){
+        $consulta="update empleado set Total_nomina_mujeres = (select SUM(sueldo_basico) as Total_nomina_mujeres from
+         empleado e where sexo ='F' )where  id = (SELECT MIN(id) FROM empleado)";
+        $resultadoh = mysqli_query($conexion,$consulta);
+        
+    }
+
+    if(isset($_POST['minimo'])){
+        $consulta="update empleado set Total_empleados_minimo =(select count(documento)
+        from empleado where sueldo_basico > 500000 )where  id = (SELECT MIN(id) FROM empleado)";
+        $resultadoh = mysqli_query($conexion,$consulta); 
+    }
+
+    if(isset($_POST['sueldon'])){
+      if ($CAMPO == 'NOMBRE') {
+        $consulta="UPDATE empleado set nombre = '$NOMBRE' WHERE id = '$ID'";
+        $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'DOCUMENTO') {
+           $consulta="UPDATE empleado set documento = '$DOCUMENTO' WHERE id = '$ID'";
+           $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'SEXO') {
+           $consulta="UPDATE empleado set sexo = '$SEXO' WHERE id = '$ID'";
+           $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'DOMICIO') {
+           $consulta="UPDATE empleado set domicilio = '$DOMICILIO' WHERE id = '$ID'";
+           $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'FECHAI') {
+           $consulta="UPDATE empleado set fecha_ingreso = '$FECHAI' WHERE id = '$ID'";
+           $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'FECHAN') {
+           $consulta="UPDATE empleado set fecha_nacimiento = '$FECHAN' WHERE id = '$ID'";
+           $resultadoh = mysqli_query($conexion,$consulta);
+         }else if ($CAMPO == 'SUELDO') {
+          $consulta="UPDATE empleado set sueldo_basico = '$SUELDO' WHERE id = '$ID'";
+          $resultadoh = mysqli_query($conexion,$consulta);
+         }
+      else {
+         print('Escogio una opcion incorrecta, intenete de nuevo');
+     }
+
+       
+
+  }
+
+    
+    if(isset($_POST['empleados'])){
+        $consulta="insert into empleado (documento,nombre,sexo,domicilio,fecha_ingreso,fecha_nacimiento,sueldo_basico)
+        VALUES(22333111,'Juan Perez','M','Colon 123','1990-02-01','1970-05-10',550000),
+        (25444444,'Susana Morales','F','Avellaneda 345','1995-04-01','1975-11-06',650000),
+        (300000222,'Hector Pereyra','M','Caseros 987','1995-04-01','1965-03-25',510000),
+        (30000222,'Luis Luque','M','Urquiza 456','1980-09-01','1980-03-29',700000),
+        (20555444,'Marialaura torres','F','San martin 1122','2000-05-15','1965-12-22',700000),
+        (30000234,'Alberto Soto','M','Peru 232','2003-08-15','1989-10-10',420000),
+        (20125478,'Ana Gomez','F','Sarmiento 975','2004-06-14','1976-09-21',350000),
+        (24154269,'Ofelia Garcia','F','Triunvirato 628','2004-09-23','1974-05-12',390000),
+        (30154269,'Oscaar Mendez','M','Colon1245','2004-06-23','1984-05-14',300000)";
+        $resultadoh = mysqli_query($conexion,$consulta); 
+    }
+
+    if(isset($_POST['etodo'])){
+        $consulta="TRUNCATE TABLE empleado";
+        $resultadoh = mysqli_query($conexion,$consulta); 
+    }
+    
+    if(isset($_POST['cmayoh'])) {
+        $consulta = "SELECT COUNT(*) AS totalh
+                     FROM empleado
+                     WHERE EXTRACT(MONTH FROM fecha_nacimiento) = 5 AND sexo = 'M'";
+        $resultado = mysqli_query($conexion, $consulta); 
+        $fila = mysqli_fetch_assoc($resultado);
+        $total_empleados_mayo = $fila['totalh'];
+
+        ?>
+        <script>
+                alert('El total de hombres que cumplen años en mayo es: <?php echo $total_empleados_mayo?>')
+        </script>
+        <?php
+    }
+
+    
+
+    if(isset($_POST['cmayom'])) {
+        $consulta = "SELECT COUNT(*) AS totalm
+                     FROM empleado
+                     WHERE EXTRACT(MONTH FROM fecha_nacimiento) = 5 AND sexo = 'F'";
+        $resultado = mysqli_query($conexion, $consulta); 
+        $fila = mysqli_fetch_assoc($resultado);
+        $total_empleados_mayo = $fila['totalm'];
+
+        ?>
+        <script>
+                alert('El total de mujeres que cumplen años en mayo es: <?php echo $total_empleados_mayo?>')
+        </script>
+        <?php
+    }
+    
+
+    ?>
+<form action="index.php" method="POST">
+  <div class="row">
+
+  <div class="col">
+      <label for="ID">ID:</label>
+      <br>
+      <input type="number" id="ID"name ="ID" class="porras" >
+    </div>
+   
+    <div class="col">
+      <label for="DOCUMENTO">DOCUMENTO:</label>
+      <br>
+      <input type="number" id="DOCUMENTO"name ="DOCUMENTO" >
+    </div>
+
+    <div class="col">
+      <label for="NOMBRE">NOMBRE:</label>
+      <br>
+      <input type="text" id="NOMBRE" name="NOMBRE"  >
+    </div>
+
+    <div class="col">
+    <label for="SEXO">SEXO:</label>
+    <select id='SEXO' name='SEXO'>
+        <option value="">Selecciona una opción</option>
+        <option value="M" id='M'>M</option>
+        <option value="F" id ='F'>F</option>
+    </select>
+    </div>
+
+    <div class="col">
+      <label for="DOMICILIO">DOMICIO:</label>
+      <br>
+      <input type="text" id="DOMICILIO" name="DOMICILIO"  >
+    </div>
+
+    <div class="col">
+      <label for="FECHAI">FECHA INGRESO::</label>
+      <br>
+      <input type="date" id="FECHAI" name="FECHAI"  >
+    </div>
+
+    <div class="col">
+      <label for="FECHAN">FECHA NACIMIENTO:</label>
+      <br>
+      <input type="date" id="FECHAN" name="FECHAN"  >
+    </div>
+    <div class="col">
+      <label for="SUELDO">SUELDO:</label>
+      <br>
+      <input type="number" id="SUELDO"name ="SUELDO" >
+    </div>
+
+    <div class="col">
+    <label for="CAMPO">CAMPO ACTUALIZAR:</label>
+    <select id='CAMPO' name='CAMPO'>
+        <option value="">Selecciona una opción</option>
+        <option value="DOCUMENTO" id='DOCUMENTO'>DOCUMENTO</option>
+        <option value="NOMBRE" id ='NOMBRE'>NOMBRE</option>
+        <option value="SEXO" id ='NOMBRE'>SEXO</option>
+        <option value="DOMICIO" id ='DOMICIO'>DOMICIO</option>
+        <option value="FECHAI" id ='FECHA INGRESO'>FECHA INGRESO</option>
+        <option value="FECHAN" id ='FECHA NACIMIENTO'>FECHA NACIMIENTO</option>
+        <option value="SUELDO" id ='SUELDO'>SUELDO</option>
+    </select>
+    </div>
+
+    
+    <div class="col">
+      <label for="ENVIAR"></label>
+      <br>
+      
+      <button type="submit" name="insertar">Insertar</button>
+      <button type="submit" name="eliminar">Eliminar</button>
+      <button type="submit" name="aumento">Aumento 10%</button>
+      <button type="submit" name="chombres">Cantidad Hombres</button>
+      <button type="submit" name="cMujeres">Cantidad Mujeres</button>
+      <button type="submit" name="totalh">T nomina hombres</button>
+      <button type="submit" name="totalm">T nomina mujeres</button>
+      <button type="submit" name="minimo">Empleados que ganan mas del minimo</button>
+      <button type="submit" name="empleados">Ingresar empleados guia</button>
+      <button type="submit" name="etodo">TRUNCAR</button>
+      <button type="submit" name="cmayoh">Cumpleaños mayo Hombres</button>
+      <button type="submit" name="cmayom">Cumpleaños mayo Mujeres</button>
+      <button type="submit" name="sueldon">actualizar  Dato</button>
+    </div>
+  </div>
+
+  
+</form> 
+    <br>
+    <table class='tabla-datos'>
+        <tr >
+            <td>ID</td>
+            <td>DOCUMENTO</td>
+            <td>NOMBRE</td>
+            <td>SEXO</td>
+            <td>DOMICILIO</td>
+            <td>FECHA DE INGRESO</td>
+            <td>FECHA DE NACIMIENTO</td>
+            <td>SUELDO BASICO</td>
+            <td>SUELDO + 10%</td>
+            <td># HOMBRES</td>
+            <td># MUJERES</td>
+            <td>T NOMINA H</td>
+            <td>T NOMINA M</td>
+            <td>EMPLEADOS + MINIMO</td>
+        </tr>
+
+        <?php
+        $sql='SELECT * FROM empleado ';
+        $resultado = mysqli_query($conexion,$sql);
+
+        while($mostrar=mysqli_fetch_array($resultado)){
+            
+        
+        ?>
+        <tr>
+            <td><?php echo $mostrar ['id'] ?></td>
+            <td><?php echo $mostrar ['documento'] ?></td>
+            <td><?php echo $mostrar ['nombre'] ?></td>
+            <td><?php echo $mostrar ['sexo'] ?></td>
+            <td><?php echo $mostrar ['domicilio'] ?></td>
+            <td><?php echo $mostrar ['fecha_ingreso'] ?></td>
+            <td><?php echo $mostrar ['fecha_nacimiento'] ?></td>
+            <td><?php echo $mostrar ['sueldo_basico'] ?></td>
+            <td><?php echo $mostrar ['sueldo_aumento'] ?></td>
+            <td><?php echo $mostrar ['cantidad_hombres'] ?></td>
+            <td><?php echo $mostrar ['cantidad_mujeres'] ?></td>
+            <td><?php echo $mostrar ['Total_nomina_hombres'] ?></td>
+            <td><?php echo $mostrar ['Total_nomina_mujeres'] ?></td>
+            <td><?php echo $mostrar ['Total_empleados_minimo'] ?></td>
+        </tr>
+<?php
+}
+  ?>  
+  
+  <!-- Inserar empleado-->
+  
+    </table>
+
+
+</body>
+</html>
